@@ -8,8 +8,18 @@
 -- Now that we are here, how is your week going? :)?
 -- ---------------------------------------------------------------------------------------------------
 
--- create table "user" that governs users
+DROP TABLE IF EXISTS [listing];
+DROP TABLE IF EXISTS [car];
+DROP TABLE IF EXISTS [make];
+DROP TABLE IF EXISTS [model];
+DROP TABLE IF EXISTS [user-listing]
 DROP TABLE IF EXISTS [user];
+DROP TABLE IF EXISTS [location];
+DROP TABLE IF EXISTS [car_spec];
+DROP TABLE IF EXISTS [kbb_data];
+DROP TABLE IF EXISTS [picture];
+
+-- create table "user" that governs users
 CREATE TABLE [user](
 	[id] INT PRIMARY KEY IDENTITY(1,1),
 	[username] VARCHAR (252) NOT NULL,
@@ -17,14 +27,13 @@ CREATE TABLE [user](
 	)
 
 -- create location table
-DROP TABLE IF EXISTS [location];
 CREATE TABLE [location](
 	[id] INT PRIMARY KEY IDENTITY(1,1),
-	[location] VARCHAR (252) NOT NULL
+	[location] VARCHAR (252) NOT NULL,
+	[url] VARCHAR(252) NOT NULL
 	)
 
 -- create car spec table
-DROP TABLE IF EXISTS [car_spec];
 CREATE TABLE [car_spec] (
 	[id] INT PRIMARY KEY IDENTITY (1,1),
 	[originCountry] VARCHAR(30),
@@ -80,7 +89,6 @@ CREATE TABLE [car_spec] (
 )
 
 -- create kbb data table
-DROP TABLE IF EXISTS [kbb_data];
 CREATE TABLE [kbb_data] (
 	[id] INT PRIMARY KEY IDENTITY(1,1),
 	[pros] VARCHAR(MAX) NOT NULL,
@@ -90,7 +98,6 @@ CREATE TABLE [kbb_data] (
 	[startingPrice] DECIMAL (6,2) NOT NULL
 )
 -- create model table
-DROP TABLE IF EXISTS [model];
 CREATE TABLE [model] (
 	[id] INT PRIMARY KEY IDENTITY(1,1),
 	[year] INT NOT NULL,
@@ -104,14 +111,14 @@ CREATE TABLE [model] (
 		FOREIGN KEY ([car_specId])
 		REFERENCES [car_spec](id)
 )
+
 -- create make table
-DROP TABLE IF EXISTS [make];
 CREATE TABLE [make] (
 	[id] INT PRIMARY KEY IDENTITY(1,1),
-	[name] VARCHAR(252) NOT NULL
+	[name] VARCHAR(252) NOT NULL,
+	CONSTRAINT uniqueMake UNIQUE([name])
 )
 -- create car table
-DROP TABLE IF EXISTS [car];
 CREATE TABLE [car] (
 	[id] INT PRIMARY KEY IDENTITY (1,1),
 	[makeId] INT NOT NULL,
@@ -125,7 +132,6 @@ CREATE TABLE [car] (
 )
 
 -- create listing table 
-DROP TABLE IF EXISTS [listing];
 CREATE TABLE [listing] (
 	[id] INT PRIMARY KEY IDENTITY(1,1),
 	[price] DECIMAL(6, 2) NOT NULL, -- no car is on craigslist for 1M dollars i swear
@@ -143,8 +149,19 @@ CREATE TABLE [listing] (
 		REFERENCES [car](id)
 )
 
+CREATE TABLE [user-listing] (
+	[userId] INT,
+	[listingId] INT,
+	PRIMARY KEY ([userId], [listingId]),
+	CONSTRAINT [user-listingToUser]
+		FOREIGN KEY ([userId])
+		REFERENCES [user](id),
+	CONSTRAINT [user-listingToListing]
+		FOREIGN KEY ([listingId])
+		REFERENCES [listing](id)
+)
+
 -- create picture table
-DROP TABLE IF EXISTS [picture];
 CREATE TABLE [picture](
 	[id] INT PRIMARY KEY IDENTITY(1,1),
 	[listingId] INT NOT NULL,
