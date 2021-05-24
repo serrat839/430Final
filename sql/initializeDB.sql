@@ -60,32 +60,32 @@ CREATE TABLE [car_spec] (
 	[maxTorque(Lb-ft)] INT,
 	[maxTorque(kgf-m)] INT,
 	[maxTorque(rpm)] INT,
-	[engineCompressionRatio] DECIMAL (3, 2),
+	[engineCompressionRatio] DECIMAL (7, 2),
 	[engineFuelType] VARCHAR(30),
 	[drive] VARCHAR(30),
 	[transmission] VARCHAR(30),
 	[topSpeed(mph)] INT, 
-	[zeroToSixtytwoMPH] DECIMAL (3, 2),
+	[zeroToSixtytwoMPH] DECIMAL (7, 2),
 	[doors] INT,
 	[seats] INT,
 	[weight(kg)] INT,
 	[weight(lbs)] INT, 
-	[length(mm)] DECIMAL (4, 2),
-	[length(in)] DECIMAL (4, 2),
-	[width(mm)] DECIMAL (4, 2),
-	[width(in)] DECIMAL (4, 2),
-	[height(mm)] DECIMAL (4, 2),
-	[height(in)] DECIMAL (4, 2),
-	[wheelbase(mm)] DECIMAL (4, 2),
-	[wheelbase(in)] DECIMAL (4, 2),
-	[fuelEconomyCity(L/100km)] DECIMAL (3, 2),
+	[length(mm)] DECIMAL (7, 2),
+	[length(in)] DECIMAL (7, 2),
+	[width(mm)] DECIMAL (7, 2),
+	[width(in)] DECIMAL (7, 2),
+	[height(mm)] DECIMAL (7, 2),
+	[height(in)] DECIMAL (7, 2),
+	[wheelbase(mm)] DECIMAL (7, 2),
+	[wheelbase(in)] DECIMAL (7, 2),
+	[fuelEconomyCity(L/100km)] DECIMAL (7, 2),
 	[fuelEconomyCity(mpg)] INT,
-	[fuelEconomyHWY(L/100km)] DECIMAL (3,2),
+	[fuelEconomyHWY(L/100km)] DECIMAL (7,2),
 	[fuelEconomyHWY(mpg)] INT,
-	[fuelEconomyMixed(L/100km)] DECIMAL(3,2),
+	[fuelEconomyMixed(L/100km)] DECIMAL(7,2),
 	[fuelEconomyMixed(mpg)] INT,
-	[fuelCapacity(L)] DECIMAL(3,2),
-	[fuelCapacity(g)] DECIMAL(3,2)
+	[fuelCapacity(L)] DECIMAL(7,2),
+	[fuelCapacity(g)] DECIMAL(7,2)
 )
 
 -- create kbb data table
@@ -95,7 +95,7 @@ CREATE TABLE [kbb_data] (
 	[cons] VARCHAR(MAX) NOT NULL,
 	[new] VARCHAR(MAX) NOT NULL,
 	[review] VARCHAR(MAX) NOT NULL,
-	[startingPrice] DECIMAL (6,2) NOT NULL
+	[startingPrice] DECIMAL (10,2) NOT NULL
 )
 -- create model table
 CREATE TABLE [model] (
@@ -164,6 +164,7 @@ CREATE TABLE [user-listing] (
 -- create picture table
 CREATE TABLE [picture](
 	[id] INT PRIMARY KEY IDENTITY(1,1),
+	[filename] varchar(252) NOT NULL,
 	[listingId] INT NOT NULL,
 	CONSTRAINT [pictureToListing] 
 		FOREIGN KEY ([listingId])
