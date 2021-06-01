@@ -9,7 +9,7 @@ import pandas as pd
 
 urls = []
 carMakesUrls = []
-csv_filepath = os.path.join(os.path.dirname(__file__), 'craiglistOutput.csv')
+csv_filepath = os.path.join(os.path.dirname(__file__), 'craiglistOutputFinal.csv')
 
 def crawl_urls():
     regions = ["bellingham", "kpr", "moseslake", "olympic", "pullman", "seattle", "skagit", "spokane", "wenatchee", "yakima"]
@@ -51,17 +51,25 @@ def createCarMakesArray():
     try:
         carMakesList = soup.find_all("div", attrs={"class": "b-category-list-item__title"})
         for carMake in carMakesList:
-                carMake1 = str(carMake)
-                carMake2 = carMake1[:-6]
-                carMakeName = carMake2[41:]
-                # If carMakeName contains - (ex: Rolls-Royce), replace it with a space (ex: Rolls Royce)
-                if carMakeName.find('-') != -1:
-                    carMakeName = carMakeName.replace('-', ' ')
-                # Website formats GM/General Motors as (ex: GM (General Motors)); fix formatting to GM and General Motors as two separate entries
-                if carMakeName.find('GM') != -1 and carMakeName != 'GMC':
-                    carMakeName = str.split(carMakeName, ' (')[0]
-                # Add lowercase version of carMakeName to list
-                allCarMakes.append(str.lower(carMakeName))
+            carMake1 = str(carMake)
+            carMake2 = carMake1[:-6]
+            carMakeName = carMake2[41:]
+            # If carMakeName contains - (ex: Rolls-Royce), replace it with a space (ex: Rolls Royce)
+            if carMakeName.find('-') != -1:
+                carMakeName = carMakeName.replace('-', ' ')
+            # Website formats GM/General Motors as (ex: GM (General Motors)); fix formatting to GM and General Motors as two separate entries
+            if carMakeName.find('GM') != -1 and carMakeName != 'GMC':
+                carMakeName = str.split(carMakeName, ' (')[0]
+            # Add lowercase version of carMakeName to list
+            allCarMakes.append(str.lower(carMakeName))
+        # Add Mercedes-Benz manually; website only has "Mercedes", etc.
+        allCarMakes.append('mercedes benz')
+        allCarMakes.append('chevy')
+        allCarMakes.append('studebaker')
+        allCarMakes.append('vw')
+        allCarMakes.append('triumph')
+        allCarMakes.append('mack')
+        allCarMakes.append('mack trucks')
     except:
         print('Could not scrape url: ', urlPage)
     
@@ -95,27 +103,44 @@ def scrape_urls():
         carMake = ''
         carModel = ''
         try:
+            # Some entries on Craigslist list the year twice; account for this
+            if carInfoArr[1].isnumeric():
+                carInfoArr = carInfoArr[1:]
             carInfo1 = str.lower(carInfoArr[1])
             # If entry after year element has a '-', replace with a ' ' for consistent formatting
             if carInfo1.find('-') != -1:
                     carInfo1 = carInfo1.replace('-', ' ')
             # Check to see if entry after year element is in allCarMakes 
             if carInfo1 in allCarMakes:
+                # Check for special cases for consistency in data
+                if carInfo1 == 'mercedes benz':
+                    carInfo1 = 'mercedes'
+                elif carInfo1 == 'gm':
+                    carInfo1 = 'general motors'
+                elif carInfo1 == 'vw':
+                    carInfo1 = 'volkswagen'
+                elif carInfo1 == 'chevy':
+                    carInfo1 = 'chevrolet'
+                elif carInfo1 == 'mack':
+                    carInfo1 = 'mack trucks'
                 # If this entry is in allCarMakes, carMake is this entry with the first letter of each word capitalized
                 carMake = str.title(carInfo1)
                 # carModel is the rest of the string
-                carModel = " ".join(carInfoArr[2:])
+                carModel1 = " ".join(carInfoArr[2:])
+                carModel = str.title(carModel1)
             else:
                 # If entry after year wasn't in allCarMakes, see if first two entries, combined with a space, after year is
                 carInfo2 = str.lower(carInfoArr[1] + ' ' + carInfoArr[2])
                 if carInfo2 in allCarMakes:
                     carMake = str.title(carInfo2)
-                    carModel = " ".join(carInfoArr[3:])
+                    carModel1 = " ".join(carInfoArr[3:])
+                    carModel = str.title(carModel1)
                 else:
                     carInfo3 = str.lower(carInfo2 + ' ' + carInfoArr[3])
                     if carInfo3 in allCarMakes:
                         carMake = str.title(carInfo3)
-                        carModel = " ".join(carInfoArr[4:])
+                        carModel1 = " ".join(carInfoArr[4:])
+                        carModel = str.title(carModel1)
         except:
             carMake = 'N/A'
             carModel = 'N/A'
@@ -162,22 +187,31 @@ def scrape_urls():
 
         postingUrl = url
 
-        carImageLink = ''
+        carImageLinks = []
         try:
-            carImageLink = soup.find("div", attrs={"class": "slide first visible"}).img['src']
+            links = soup.find("div", attrs={"id": "thumbs"}).find_all('a')
+            for element in links:
+                link = element['href']
+                carImageLinks.append(link)
         except:
-            carImageLink = 'N/A'
+            carImageLinks = ['N/A']
+
+        regionsDict = {"bellingham": "Bellingham", "kpr": "Kennewick-Pasco-Richland", "moseslake": "Moses Lake", 
+                       "olympic": "Olympic Peninsula", "pullman": "Pullman / Moscow", "seattle": "Seattle-Tacoma", 
+                       "skagit": "Skagit Island / San Juan Islands", "spokane": "Spokane / Coeur d'Alene", 
+                       "wenatchee": "Wenatchee", "yakima": "Yakima"}
 
         postingRegion1 = url[8:]
         postingRegion2 = str.split(postingRegion1, '.')
-        postingRegion = str.title(postingRegion2[0])
+        postingRegion3 = str.lower(postingRegion2[0])
+        postingRegion = regionsDict[postingRegion3]
 
-        print(carMake, carModel, carYear, carPrice, carCondition, milesOnCar, postingDate, postingUrl, carImageLink, postingRegion)
-        cars.append([carMake, carModel, carYear, carPrice, carCondition, milesOnCar, postingDate, postingUrl, carImageLink, postingRegion])
+        print(carMake, carModel, carYear, carPrice, carCondition, milesOnCar, postingDate, postingUrl, carImageLinks, postingRegion)
+        cars.append([carMake, carModel, carYear, carPrice, carCondition, milesOnCar, postingDate, postingUrl, carImageLinks, postingRegion])
         # Sleeping for 1 second to be nice to Craigslist
         time.sleep(1)
 
-    columns = ['CarMake', 'CarModel', 'CarYear', 'CarPrice', 'CarCondition', 'MilesOnCar', 'PostingDate', 'PostingUrl', 'CarImageLink', 'PostingRegion']
+    columns = ['CarMake', 'CarModel', 'CarYear', 'CarPrice', 'CarCondition', 'MilesOnCar', 'PostingDate', 'PostingUrl', 'CarImageLinks', 'PostingRegion']
     df = pd.DataFrame(cars, columns=columns)
     
     df.to_csv(csv_filepath, index = False)
@@ -193,7 +227,7 @@ def insert_to_db():
     conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
     cursor = conn.cursor()
     for index, row in df.iterrows():
-        cursor.execute("INSERT INTO dbo.hriggs_recipes (CarMake, CarModel, CarYear, CarPrice, CarCondition, MilesOnCar, PostingDate, PostingUrl, CarImageLink, PostingRegion) values(?,?,?,?,?,?,?,?,?)", row.CarMake, row.CarModel, row.CarYear, row.CarPrice, row.CarCondition, row.MilesOnCar, row.PostingDate, row.PostingUrl, row.CarImageLink, row.PostingRegion)
+        cursor.execute("INSERT INTO dbo.hriggs_recipes (CarMake, CarModel, CarYear, CarPrice, CarCondition, MilesOnCar, PostingDate, PostingUrl, CarImageLinks, PostingRegion) values(?,?,?,?,?,?,?,?,?)", row.CarMake, row.CarModel, row.CarYear, row.CarPrice, row.CarCondition, row.MilesOnCar, row.PostingDate, row.PostingUrl, row.CarImageLinks, row.PostingRegion)
     conn.commit()
     cursor.close()
 
