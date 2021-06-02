@@ -134,12 +134,13 @@ CREATE TABLE [car] (
 -- create listing table 
 CREATE TABLE [listing] (
 	[id] INT PRIMARY KEY IDENTITY(1,1),
-	[price] DECIMAL(6, 2) NOT NULL, -- no car is on craigslist for 1M dollars i swear
+	[price] INT,
 	[url] VARCHAR(252) NOT NULL,
 	[date] DATE NOT NULL,
 	[odometer] INT,
 	[condition] VARCHAR(252),
 	[locationId] INT NOT NULL,
+	[alias] VARCHAR(2000) NOT NULL,
 	[carId] INT NOT NULL,
 	CONSTRAINT [listingToLocation]
 		FOREIGN KEY ([locationId])
@@ -164,7 +165,7 @@ CREATE TABLE [user-listing] (
 -- create picture table
 CREATE TABLE [picture](
 	[id] INT PRIMARY KEY IDENTITY(1,1),
-	[filename] varchar(252) NOT NULL,
+	[filename] varchar(2000) NOT NULL,
 	[listingId] INT NOT NULL,
 	CONSTRAINT [pictureToListing] 
 		FOREIGN KEY ([listingId])
