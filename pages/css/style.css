@@ -26,3 +26,18 @@ body {
     margin-left: 0;
     margin-right: 0;
 }
+
+.card-img {
+    max-height: 275px;
+}
+
+.container-fluid {
+    margin-left: 1em;
+    margin-right: 1em;
+    padding-left: 0px ;
+    padding-right: 0px ;
+}
+
+.sticky-top {
+    top: 2rem;
+}
