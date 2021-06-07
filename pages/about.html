@@ -29,7 +29,7 @@
         </div>
     </header>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
@@ -41,6 +41,49 @@
           </ul>
         </div>
     </nav>
+
+    <div>
+        <h3>Problem Statement</h3>
+    </div>
+
+    <div>
+        <h3>Solution</h3>
+        <p>In order to provide car listings, we used data from three different sources: Craigslist, Kelly Blue Book, 
+        and CarQueryApi.com. First, what we did was scrape all of the distinct Washington Craigslist portals for about 360 used cars each (totalling 3000+ listings).
+        From those listings, we then proceed the scrape the information needed such as car make, model, price, etc.After scraping and cleaning this data from craigslist, 
+        we then used the more accurate make/model/year information we gathered to scrape review details, common starting prices, as well as pros and cons from Kelly Blue Book. 
+        By searching for common phrases within reviews such as “Pros,” and “Cons,” we were able to gather many reviews for each car. These reviews will allow users to learn more 
+        about cars they have their eyes on, which can help them decide which car is right for them without having to navigate to other websites.</p>
+    </div>
+
+    <div>
+        <h3>Method and Design</h3>
+    </div>
+
+    <div>
+        <h3>Challenges</h3>
+        <p>Not all car listings were formatted the same, so in order to find more specific details on the car, we used external sources such as CarQueryApi in order to find details 
+            about each vehicle if it was available. In order to ensure that we had the best guess for each car, we found all of the models for a given year for the listed make, and then 
+            used the model that was most similar to the one listed on craigslist. This way, we could ensure that we were as correct as possible when adding car specs to each listing. 
+            For some listings, we could not find the exact model for their given year, so we put the extra details as “UNKNOWN” but were sure to specify the Make/Model/Year that the owner 
+            put for the sake of accuracy.</p>
+        <p>We also encountered an issue with CarQueryAPI. While attempting to collect information about each unique Make/Model/Year combination, our access to the api got restricted, 
+            so we had to have a group member complete the scraping. Should we have progressed further in this project, we would have either had to purchase a subscription to the api, 
+            purchase the data from the api, or drastically limit our api calls. Fortunately for us, this was out of scope.</p>
+    </div>
+
+    <div>
+        <h3>Limitations</h3>
+        <p>Major limitations of this project came down to our processing of Craigslist car listings. Many listings had car models that did not exist or that could not be matched to 
+            any existing car model, so we unfortunately had to exclude those listings from our data or use placeholder values. This resulted in us losing a large amount of potential listings, 
+            but in the end we still had 1000+ listings for our MVP. Realistically, we could use more of the features listed in the craigslist post to perform a deeper search and find the correct 
+            car model, but to do so would be difficult and time consuming, so we deemed it out of scope.</p>
+    </div>
+
+    <div>
+        <h3>Team Member</h3>
+        <p>Tommy Huynh Lam, Matthew Putra, Haley Riggs, Thomas Serrano</p>
+    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
