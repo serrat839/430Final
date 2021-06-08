@@ -85,7 +85,7 @@ app.get('/listing/:id', function (req, res) {
 
                 if (err) console.log(err)
 
-                // Send records as a response
+                // Send records as a responses
                 // to browser
 
                 res.send(records.recordsets);
@@ -106,7 +106,33 @@ app.get('/listingCard', function (req, res) {
         let request = new mssql.Request();
 
         // Query to the database and get the records
-        request.query("Select li.id, li.price, li.url, li.date, li.odometer, li.condition, lo.location, ma.name as 'make', mo.name as 'model', picture.[filename] from [dbo].[listing] as li left join [dbo].[car] as ca on li.carId = ca.id left join [dbo].[make] as ma on ca.makeId = ma.id left join [dbo].[model] as mo on ca.modelId = mo.id left join [dbo].[location] as lo on  li.locationId = lo.id left join [dbo].picture on li.id = picture.listingId ;" ,
+        request.query("Select li.id, li.price, li.url, li.date, li.odometer, li.condition, lo.location, ma.name as 'make', mo.year as 'year', mo.name as 'model', picture.[filename] from [dbo].[listing] as li left join [dbo].[car] as ca on li.carId = ca.id left join [dbo].[make] as ma on ca.makeId = ma.id left join [dbo].[model] as mo on ca.modelId = mo.id left join [dbo].[location] as lo on  li.locationId = lo.id left join [dbo].picture on li.id = picture.listingId ;" ,
+            function (err, records) {
+
+                if (err) console.log(err)
+
+                // Send records as a response
+                // to browser
+
+                res.send(records.recordsets);
+
+            });
+    });
+});
+
+app.get('/modalCar/:id', function (req, res) {
+
+    // Config your database credential
+
+    // Connect to your database
+    mssql.connect(config, function (err) {
+
+        // Create Request object to preform
+        // query operation
+        let request = new mssql.Request();
+
+        // Query to the database and get the records
+        request.query("select li.id as 'listId', li.price, li.url, li.date, li.odometer, li.condition, lo.location, ma.name as 'make', mo.name as 'model', mo.year as 'year', picture.[filename] , kb.id as 'kbbId', kb.pros, kb.cons, kb.new, kb.review, kb.startingPrice , cs.* from [dbo].[listing] as li left join [dbo].[car] as ca on li.carId = ca.id left join [dbo].[model] as mo on ca.modelId = mo.id left join [dbo].[make] as ma on ca.makeId = ma.id left join [dbo].[car_spec] as cs on mo.car_specId = cs.id left join [dbo].[kbb_data] as kb on mo.kbb_dataId = kb.id left join [dbo].[location] as lo on  li.locationId = lo.id left join [dbo].picture on li.id = picture.listingId where li.id =" +req.params['id'],
             function (err, records) {
 
                 if (err) console.log(err)

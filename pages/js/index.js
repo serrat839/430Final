@@ -1,17 +1,10 @@
 'use strict';
 
 // Loads in select bar
-window.onload = function () {
 
-}
-
-let L = window.L
 
 var apiLink = "http://localhost:5000/"
 
-
-
-let bigArr = [];
 
 function loadSearch() {
     fillMData('make', 'Id');
@@ -125,8 +118,6 @@ document.getElementById('search').addEventListener("click", function () {
     let minPrice = document.getElementById('minPrice').value
     let maxPrice = document.getElementById('maxPrice').value
 
-    console.log('ah', makeVal, modelVal, locVal);
-
     let arr = [];
 
     fetch(apiLink + 'listings')
@@ -189,9 +180,6 @@ document.getElementById('search').addEventListener("click", function () {
             }
         })
 
-
-        //.then(data => console.log(data))
-
         .then(data => data.forEach(function (x) {
             arr.push(x.listId)
         }))
@@ -201,79 +189,19 @@ document.getElementById('search').addEventListener("click", function () {
 });
 
 
-
-/*
-
-function findTable(name, val) {
-    fetch(apiLink + name)
-        .then(response => response.json())
-        .then(data => findUnique(data[0], val))
-        .then(data => console.log(data));
-
-}
-
-*/
-
-
-// Previous code below
-
-/*
-
-// Fetches data for select bar
-function fetchCarData() {
-    let a = fetch('./data/carInfo.json')
-        .then(response => response.json())
-        .then(fillSelect);
-    return a;
-}
-
-// Fills in select bar with unqiue attributes
-function fillSelect(obj) {
-    let sel = document.getElementById('sel');
-    sel.innerhtml = '';
-    let unique = [];
-    obj.carInfo.forEach((d) => {
-        let findItem = unique.find(x => x.make == d.make);
-        if (!findItem)
-            unique.push(d);
-    });
-
-    unique.forEach((car) => addToSel(car, 'sel'));
-}
-
-// Adds the filtered value onto the select bar
-function addToSel(obj, el) {
-    let sel = document.getElementById(el);
-    sel.innerHTML = sel.innerHTML +
-        '<option value="' + obj.make + '">' + obj.make + '</option>';
-}
-
-// Eventt listener for chagning select bar
-document.getElementById('sel').addEventListener('change', function () {
-    console.log(this.value);
-
-
-    var listCar = []
-    fetch('./data/carInfo.json')
-        .then(response => response.json())
-        .then(data => (data.carInfo.filter(x => x.make == this.value)))
-        .then(d => d.forEach((b) => {
-            listCar.push(b.car);
-        }));
-
-    fetch('./data/listingInfo.json')
-        .then(response => response.json())
-        .then(data => carSetup((data.listingInfo.filter((x) => listCar.includes(x.carId)))))
-})
-*/
 // Creates the list of car results
 function carSetup(obj) {
     let dom = document.getElementById('results');
+    let msg = document.getElementById('msg')
     if (obj.length == 0) {
-        dom.innerHTML ='<div class="alert alert-danger" id="alert" role="alert"> No Results Found</div>'
+        dom.innerHTML = '<div class="alert alert-danger" id="alert" role="alert"> No Results Found</div>'
+
+        if (msg.innerHTML != '') {
+            msg.innerHTML = ''
+        }
     } else {
         dom.innerHTML = 'Showing ' + obj.length + ' Results';
-        document.getElementById('msg').innerHTML = ''
+        msg.innerHTML = ''
         let arr = [];
         let sort = document.getElementById('sortBy').value
         fetch(apiLink + 'listingCard')
@@ -303,7 +231,6 @@ function carSetup(obj) {
                 } return data
             })
             .then(data => arr.push(data))
-            .then(() => console.log(arr))
             .then(() => arr[0].forEach(renderTest));
 
 
@@ -311,77 +238,81 @@ function carSetup(obj) {
 }
 
 
-
 function renderTest(obj) {
+
     let d1 = document.createElement('div');
-    if (obj.price < 0) {
-        obj.price = "Contact Listing"
+
+
+    let d2 = document.createElement('div');
+    d2.className = "card mb-3";
+    let d3 = document.createElement('div');
+    d3.className = "row g-0"
+    let d4 = document.createElement('div');
+    d4.className = "col-md-4"
+    d4.appendChild(images(obj.filename))
+    let d5 = document.createElement('div');
+    d5.className = "col-md-8"
+
+    let dom = document.getElementById('msg');
+
+
+    d3.appendChild(d4);
+    d2.appendChild(d3);
+    d5.appendChild(testCard(obj));
+    d3.appendChild(d5);
+    d2.appendChild(d3);
+    d1.appendChild(d2);
+    dom.appendChild(d1);
+}
+
+function testCard(obj) {
+    let cardBod = document.createElement('div');
+    cardBod.className = "card-body"
+
+    let cTitle = document.createElement('h5');
+    cTitle.className = "card-title"
+    cTitle.innerHTML = '<a href=' + obj.url + ' target="_blank">' + obj.make + " " + obj.model + " " + obj.year + '</a>';
+
+    let pText = document.createElement('p');
+    pText.className = "card-text";
+
+    let price = 0;
+
+    if (obj.price < 1) {
+        price = "Unknown, Contact Post"
+    } else {
+        price = "$" + obj.price
     }
-    d1.innerHTML = '<div class="container"> <div class="card mb-3">' + '<div class="row no-gutters"> <div class="col-md-4"> <img src="' + images(obj.filename) + '" class="img-fluid card-img" alt="..."> </div> <div class="col-md-8">  <div class="card-body"> <h5 class="card-title">' + obj.make + ' ' + obj.model + '</h5> <p class="card-text"> <strong> Price: </strong> $' + obj.price ;
 
-    let dom = document.getElementById('msg');
-    dom.appendChild(d1)
-}
-
-function render(obj) {
-    let d1 = document.createElement('div');
-    d1.innerHTML = '<div class="container"> <div class="card mb-3">' + '<div class="row no-gutters"> <div class="col-md-4">'
-    d1.className = 'container';
-
-    let d2 = document.createElement('div');
-    d2.className = "card mb-3";
-    let d3 = document.createElement('div');
-    d3.className = "row no-gutters"
-    let d4 = document.createElement('div');
-    d4.className = "col-md-4"
-    //d4.appendChild(images(list.filename))
-    let d5 = document.createElement('div');
-    d5.className = "col-md-8"
-    let d6 = document.createElement('div');
-    d6.className = "card-body"
-    let dom = document.getElementById('msg');
+    pText.innerHTML = "<strong> Price: </strong>" + price +
+        "<br> <strong> Location: </strong>" + obj.location;
+    ;
 
 
-    d6.appendChild(cardBody(car, list))
 
-    d3.appendChild(d4);
-    d2.appendChild(d3);
-    d5.appendChild(cardBody(car, list));
-    d3.appendChild(d5);
-    d2.appendChild(d3);
-    d1.appendChild(d2);
-    dom.appendChild(d1);
-}
+    if (obj.condition != null) {
+        pText.innerHTML = pText.innerHTML +
+            "<br> <strong> Condition: </strong>" + obj.condition
+    }
+
+    pText.innerHTML = pText.innerHTML +
+        "<br> <strong> Odometer: </strong>" + obj.odometer
 
 
-// Creates the list of car results
-function renderCar(car, list) {
-    let d1 = document.createElement('div');
-    d1.className = 'container';
+    let pDate = document.createElement('p');
+    let dateText = document.createElement('small')
 
-    let d2 = document.createElement('div');
-    d2.className = "card mb-3";
-    let d3 = document.createElement('div');
-    d3.className = "row no-gutters"
-    let d4 = document.createElement('div');
-    d4.className = "col-md-4"
-    //d4.appendChild(images(list.filename))
-    let d5 = document.createElement('div');
-    d5.className = "col-md-8"
-    let d6 = document.createElement('div');
-    d6.className = "card-body"
-    let dom = document.getElementById('msg');
+    dateText.className = "card-text"
+    dateText.innerHTML = "Posted on " + obj.date.substring(0, 10)
+    pDate.appendChild(dateText);
 
+    pDate.innerHTML = pDate.innerHTML + '<button type="button" class="btn btn-primary float-end" onclick="exampleOnclick(this)" value="' + obj.id + '">More Info</button>'
 
-    d6.appendChild(cardBody(car, list))
+    cardBod.append(cTitle)
+    cardBod.append(pText)
+    cardBod.append(pDate)
 
-    d3.appendChild(d4);
-    d2.appendChild(d3);
-    d5.appendChild(cardBody(car, list));
-    d3.appendChild(d5);
-    d2.appendChild(d3);
-    d1.appendChild(d2);
-    dom.appendChild(d1);
+    return cardBod
 }
 
 // Creates the list of car results
@@ -390,56 +321,26 @@ function images(obj) {
     b = b.replaceAll("]", '')
     b = b.replaceAll("\'", "")
     b = b.split(",")
-    /*
+
     let img = document.createElement('img');
-        img.className = "img-fluid card-img"
-        img.src = b[0]
-        */
+    img.className = "card-img"
+    img.src = b[0]
+
+    console.log(img)
+    return img
+
+}
+
+function imagesTest(obj) {
+    let b = obj.replaceAll("[", "")
+    b = b.replaceAll("]", '')
+    b = b.replaceAll("\'", "")
+    b = b.split(",")
+
     return b[0]
 
 }
 // Creates the list of car results
-function cardBody(car, list) {
-    let cardBod = document.createElement('div');
-    cardBod.className = "card-body"
-
-    let cTitle = document.createElement('h5');
-    cTitle.className = "card-title"
-    cTitle.innerHTML = car.make + " " + car.model;
-
-    let pText = document.createElement('p');
-    pText.className = "card-text";
-    pText.innerHTML = "<strong> Price: </strong> $" + list.price + " <strong>Starting Price: </strong> $" + car.startingprice;
-
-    if (typeof list.condition != "undefined") {
-        pText.innerHTML = pText.innerHTML +
-            "<br> <strong> Condition: </strong>" + list.condition
-    }
-
-    pText.innerHTML = pText.innerHTML +
-        " <strong> Odometer: </strong>" + list.odometer
-
-
-    let pDate = document.createElement('p');
-    let dateText = document.createElement('small')
-    dateText.className = "text-muted"
-    dateText.className = "card-text"
-    dateText.innerHTML = "Posted on " + list.date
-    pDate.appendChild(dateText);
-    let contact = document.createElement('a')
-    contact.className = "float-end"
-    contact.href = list.url
-    contact.innerHTML = "Contact"
-    let but = document.createElement('button');
-    but.innerHTML = '<button type="button" class="btn btn-outline-primary" onclick="exampleOnclick(this)" value="' + list.url + '">More Info</button>'
-    pDate.appendChild(but)
-    pDate.appendChild(contact)
-    cardBod.append(cTitle)
-    cardBod.append(pText)
-    cardBod.append(pDate)
-
-    return cardBod
-}
 
 function exampleOnclick(btn) {
     var name = btn.value;
@@ -449,47 +350,154 @@ function exampleOnclick(btn) {
     // Init the modal if it hasn't been already.
     if (!exampleModal) { exampleModal = initExampleModal(); }
 
-    let test = findUrl(name);
-    console.log(test.length);
-    console.log(test[1])
-    let car = findCarForModal(test)
+    findModalCar(name);
+}
 
+function exampleClose() {
+    jQuery(exampleModal).modal('hide');
+}
+
+function findModalCar(val) {
+    fetch(apiLink + 'modalCar/' + val)
+        .then(response => response.json())
+        .then(data => data[0])
+        .then(data => setModal(data[0]));
+}
+
+function setModal(obj) {
     var html =
         '<div class="modal-header">' +
-        '<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>' +
-        '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+        '<h5 class="modal-title" id="exampleModalLabel"><a href=' + obj.url + '" target = "_blank">' + obj.make + ' ' + obj.model + ' ' + obj.year + '</a></h5>' +
+        '<button type="button" class="close" data-dismiss="modal" onclick="exampleClose()" aria-label="Close">' +
         '<span aria-hidden="true">&times;</span>' +
         '</button>' +
         '</div>' +
-        '<div class="modal-body">' +
-        name +
+        '<div class="modal-body" id="modal-bod"> <div id="cara"></div>' +
+
         '</div>' +
         '<div class="modal-footer">' +
-        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>' +
-        '<button type="button" class="btn btn-primary">Save changes</button>' +
+        '<button type="button" class="btn btn-secondary" onclick="exampleClose()" data-dismiss="modal">Close</button>' +
         '</div>';
 
     setExampleModalContent(html);
 
+    setCarousel(obj.filename);
+
+    addInfo(obj);
     // Show the modal.
     jQuery(exampleModal).modal('show');
-
 }
 
-function findUrl(val) {
-    let a = fetch('./data/listingInfo.json')
-        .then(response => response.json())
-        .then(data => (data.listingInfo.find(x => x.url == val)));
+function setCarousel(obj) {
+    let d1 = document.createElement('div')
+    d1.setAttribute('id', "carouselExampleIndicators")
+    d1.className = 'carousel slide';
+    d1.setAttribute('data-bs-ride', 'carousel')
+    let imgs = obj.replaceAll("[", "")
+    imgs = imgs.replaceAll("]", '')
+    imgs = imgs.replaceAll("\'", "")
+    imgs = imgs.split(",")
 
-    return a
+
+    let cid = document.createElement('div')
+    cid.className = 'carousel-indicators'
+
+
+    for (let i = 0; i < imgs.length; i++) {
+        let b = document.createElement('button')
+        b.setAttribute('type', 'button')
+        b.setAttribute('data-target', '#carouselExampleIndicators')
+
+        b.setAttribute('data-slide-to', [i])
+        b.setAttribute('aria-label', 'Slide ' + (i + 1))
+        if (i == 0) {
+            b.className = 'active'
+            b.setAttribute('aria-current', 'true')
+        }
+        cid.appendChild(b);
+    }
+    d1.appendChild(cid);
+
+    let d2 = document.createElement('div')
+    d2.className = 'carousel-inner'
+
+    for (let i = 0; i < imgs.length; i++) {
+        let ci = document.createElement('div')
+        ci.className = 'carousel-item'
+        if (i == 0) {
+            ci.className = ci.className + ' active'
+        }
+        let pic = document.createElement('img')
+        pic.className = 'd-block w-100'
+        pic.src = imgs[i]
+        ci.appendChild(pic)
+        d2.appendChild(ci)
+    }
+
+    let a = document.getElementById('cara')
+
+    d1.appendChild(d2)
+
+    a.append(d1)
 }
 
-function findCarForModal(obj) {
-    console.log(obj.carId)
-    let a = fetch('./data/carInfo.json')
-        .then(response => response.json())
-        .then(data => data.carInfo.find(x => x.car == obj.carId))
-        .then(data => console.log(data));
+function addInfo(obj) {
+    let a = document.getElementById('modal-bod')
+    let b = document.createElement('div')
+
+    let p = document.createElement('div')
+
+    let price = 0;
+    if (obj.price < 0) {
+        price = "Unkown, Contact Listing"
+    } else {
+        price = '$' + obj.price;
+    }
+
+    p.innerHTML = p.innerHTML +
+        "<br> <h3><u><strong> Listing Information: </strong></u>  </h3> <strong> Price: </strong>" + price;
+
+    p.innerHTML = p.innerHTML +
+        '<strong> Location: </strong>' + obj.location
+    if (obj.condition != null) {
+        p.innerHTML = p.innerHTML +
+            " <strong> Condition: </strong>" + obj.condition
+    }
+
+    p.innerHTML = p.innerHTML +
+        " <br> <strong> Odometer: </strong>" + obj.odometer
+
+    let kbbData = document.createElement('div')
+    kbbData.innerHTML = '<h3><u><strong> Kelly Blue Book Data: </strong></u></h3>' +
+        '<p><strong> Starting Price for New: </strong> $' + obj.startingPrice + '</p> <div class="d-grid gap-2"> <button class="btn btn-primary" data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample"> What\'s New </button>  <div class="collapse" id="collapseExample1"> <div class="card card-body">' + obj.new.substring(11, obj.new.length) + '</div> </div>' + ' <button class="btn btn-primary justify-content-center" data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample"> Pros </button>  <div class="collapse" id="collapseExample2"> <div class="card card-body">' + obj.pros.substring(4, obj.pros.length) + '</div></div>' + ' <button class="btn btn-primary justify-content-center" data-toggle="collapse" href="#collapseExample3" role="button" aria-expanded="false" aria-controls="collapseExample"> Cons </button>  <div class="collapse" id="collapseExample3"> <div class="card card-body">' + obj.cons.substring(4, obj.cons.length) + '</div></div>' + ' <button class="btn btn-primary justify-content-center" data-toggle="collapse" href="#collapseExample4" role="button" aria-expanded="false" aria-controls="collapseExample"> Review </button>  <div class="collapse" id="collapseExample4"> <div class="card card-body">' + obj.review + '</div></div>' + '</div>'
+
+    let sliced = Object.keys(obj).slice(18, obj.length).reduce((result, key) => {
+        result[key] = obj[key];
+        return result
+    }, {});
+
+    let data = document.createElement('ul')
+    data.className = 'list-group'
+
+
+    Object.entries(sliced).forEach(entry => {
+        const [key, value] = entry;
+        if (value != null) {
+            if (value != '[]') {
+                data.innerHTML = data.innerHTML +
+                    '<li class="list-group-item"><strong>' + key + '</strong>: ' + value + '</li>'
+            }
+        }
+    });
+    //onsole.log(obj.slice(10,12))
+    let carSpec = document.createElement('div')
+    carSpec.innerHTML = '<h3><u><strong> Car Specs: </strong></u>  </h3>'
+    carSpec.append(data)
+
+    b.append(p)
+    b.append(kbbData)
+    b.append(carSpec)
+    a.append(b)
 
 }
 
@@ -503,7 +511,7 @@ function setExampleModalContent(html) {
 
 function initExampleModal() {
     var modal = document.createElement('div');
-    modal.classList.add('modal', 'fade');
+    modal.classList.add('modal');
     modal.setAttribute('id', 'exampleModal');
     modal.setAttribute('tabindex', '-1');
     modal.setAttribute('role', 'dialog');
