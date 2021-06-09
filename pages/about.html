@@ -46,21 +46,40 @@
 
 <div class="container">
     <div>
-        <h2><strong>Problem Statement</strong></h2>
+        <h3>Problem Statement and Solution</h3>
+        <p>Our milestone project “Davidslist” aims to assist people in their search of used cars. 
+            By using our search engine, consumers will be able to search for cars on Craigslist and 
+            filter their queries to find the best vehicle for their needs. This solution will impact 
+            anyone who wants to buy a car as well as people selling their cars, through the use of Craigslist. 
+            Both of these parties will benefit from our solution as the middleman, car dealerships, 
+            will not be present. This will result in cheaper cars for buyers and better deals for sellers. 
+            Our solution will allow users to search for cars statewide.</p>
     </div>
 
     <div>
-        <h3>Solution</h3>
-        <p>In order to provide car listings, we used data from three different sources: Craigslist, Kelly Blue Book, 
-        and CarQueryApi.com. First, what we did was scrape all of the distinct Washington Craigslist portals for about 360 used cars each (totalling 3000+ listings).
-        From those listings, we then proceed the scrape the information needed such as car make, model, price, etc.After scraping and cleaning this data from craigslist, 
-        we then used the more accurate make/model/year information we gathered to scrape review details, common starting prices, as well as pros and cons from Kelly Blue Book. 
-        By searching for common phrases within reviews such as “Pros,” and “Cons,” we were able to gather many reviews for each car. These reviews will allow users to learn more 
-        about cars they have their eyes on, which can help them decide which car is right for them without having to navigate to other websites.</p>
+        <h3>Method and Design</h3>
+        <p>To solve the problem, we have created our Craigslist used car database we named Davidslist. 
+            In order to create our solution, we needed data from three different sources: Craigslist, 
+            Kelly Blue Book, and CarQueryApi.com. First, what we did was scrape all of the distinct Washington 
+            Craigslist portals for about 360 used cars each (totalling 3000+ listings)</p>
+        <p>After scraping and cleaning this data from Craigslist, we then used the more accurate make/model/year 
+            information we gathered to scrape review details, common starting prices, as well as pros and cons 
+            from Kelly Blue Book. By searching for common phrases within reviews such as “Pros,” and “Cons,” 
+            we were able to gather many reviews for each car. These reviews will allow users to learn more about 
+            cars they have their eyes on, which can help them decide which car is right for them without having 
+            to navigate to other websites. Finally, we were able to gather large amounts of technical information 
+            for each car model using CarQueryApi.</p>
     </div>
 
     <div>
-        <h2><strong>Method and Design</strong> </h2>
+        <h3>Database Implementation</h3>
+        <p>In order to solve our problem, we scraped data from websites such as Kelley Blue Book and Craigslist, 
+            joining the data from each website by car make and model. In order to do the scraping, we utilized 
+            Beautiful Soup and then processed the data in Python. The data extracted by web scraping was stored 
+            in CSV format and pushed to Azure Data Studio. In order to maintain the integrity and accuracy of 
+            the data, we only extracted data regarding the specific car being sold from Craigslist, such as price, 
+            condition, miles on car, and images of the car. All other data, such as specific qualities of the model 
+            of the car, was scraped from verified websites such as Kelley Blue Book.</p>
     </div>
 
     <div>
