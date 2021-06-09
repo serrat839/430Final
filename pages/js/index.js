@@ -467,36 +467,36 @@ function addInfo(obj) {
     p.innerHTML = p.innerHTML +
         " <br> <strong> Odometer: </strong>" + obj.odometer
 
-    let kbbData = document.createElement('div')
-    kbbData.innerHTML = '<h3><u><strong> Kelly Blue Book Data: </strong></u></h3>' +
-        '<p><strong> Starting Price for New: </strong> $' + obj.startingPrice + '</p> <div class="d-grid gap-2"> <button class="btn btn-primary" data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample"> What\'s New </button>  <div class="collapse" id="collapseExample1"> <div class="card card-body">' + obj.new.substring(11, obj.new.length) + '</div> </div>' + ' <button class="btn btn-primary justify-content-center" data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample"> Pros </button>  <div class="collapse" id="collapseExample2"> <div class="card card-body">' + obj.pros.substring(4, obj.pros.length) + '</div></div>' + ' <button class="btn btn-primary justify-content-center" data-toggle="collapse" href="#collapseExample3" role="button" aria-expanded="false" aria-controls="collapseExample"> Cons </button>  <div class="collapse" id="collapseExample3"> <div class="card card-body">' + obj.cons.substring(4, obj.cons.length) + '</div></div>' + ' <button class="btn btn-primary justify-content-center" data-toggle="collapse" href="#collapseExample4" role="button" aria-expanded="false" aria-controls="collapseExample"> Review </button>  <div class="collapse" id="collapseExample4"> <div class="card card-body">' + obj.review + '</div></div>' + '</div>'
-
-    let sliced = Object.keys(obj).slice(18, obj.length).reduce((result, key) => {
-        result[key] = obj[key];
-        return result
-    }, {});
-
-    let data = document.createElement('ul')
-    data.className = 'list-group'
-
-
-    Object.entries(sliced).forEach(entry => {
-        const [key, value] = entry;
-        if (value != null) {
-            if (value != '[]') {
-                data.innerHTML = data.innerHTML +
-                    '<li class="list-group-item"><strong>' + key + '</strong>: ' + value + '</li>'
+        let sliced = Object.keys(obj).slice(18, obj.length).reduce((result, key) => {
+            result[key] = obj[key];
+            return result
+        }, {});
+    
+        let data = document.createElement('ul')
+        data.className = 'list-group'
+    
+    
+        Object.entries(sliced).forEach(entry => {
+            const [key, value] = entry;
+            if (value != null) {
+                if (value != '[]') {
+                    data.innerHTML = data.innerHTML +
+                        '<li class="list-group-item"><strong>' + key + '</strong>: ' + value + '</li>'
+                }
             }
-        }
-    });
+        });
+
+    let kbbData = document.createElement('div')
+    kbbData.innerHTML = '<h3><u><strong> Car Data: </strong></u></h3>' +
+        '<p><strong> Starting Price for New: </strong> $' + obj.startingPrice + '</p> <div class="d-grid gap-2"> <button class="btn btn-primary" data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample"> What\'s New </button>  <div class="collapse" id="collapseExample1"> <div class="card card-body">' + obj.new.substring(11, obj.new.length) + '</div> </div>' + ' <button class="btn btn-primary justify-content-center" data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample"> Pros </button>  <div class="collapse" id="collapseExample2"> <div class="card card-body">' + obj.pros.substring(4, obj.pros.length) + '</div></div>' + ' <button class="btn btn-primary justify-content-center" data-toggle="collapse" href="#collapseExample3" role="button" aria-expanded="false" aria-controls="collapseExample"> Cons </button>  <div class="collapse" id="collapseExample3"> <div class="card card-body">' + obj.cons.substring(4, obj.cons.length) + '</div></div>' + ' <button class="btn btn-primary justify-content-center" data-toggle="collapse" href="#collapseExample4" role="button" aria-expanded="false" aria-controls="collapseExample"> Review </button>  <div class="collapse" id="collapseExample4"> <div class="card card-body">' + obj.review + '</div></div>' + ' <button class="btn btn-primary" data-toggle="collapse" href="#collapseExample5" role="button" aria-expanded="false" aria-controls="collapseExample"> Car Specs </button>  <div class="collapse" id="collapseExample5"> ' + data.innerHTML + '</div>'
+
+
     //onsole.log(obj.slice(10,12))
     let carSpec = document.createElement('div')
-    carSpec.innerHTML = '<h3><u><strong> Car Specs: </strong></u>  </h3>'
     let box = document.createElement('div')
-    box.className = 'd-grid gap-2'
-    box.innerHTML = ' <button class="btn btn-primary" data-toggle="collapse" href="#collapseExample5" role="button" aria-expanded="false" aria-controls="collapseExample"> Car Specs </button>  <div class="collapse" id="collapseExample5"> ' + data.innerHTML + '</div>'
-   
-    carSpec.appendChild(box)
+    kbbData.innerHTML = kbbData.innerHTML 
+
+    //carSpec.appendChild(box)
 
 
 
