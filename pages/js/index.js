@@ -492,7 +492,13 @@ function addInfo(obj) {
     //onsole.log(obj.slice(10,12))
     let carSpec = document.createElement('div')
     carSpec.innerHTML = '<h3><u><strong> Car Specs: </strong></u>  </h3>'
-    carSpec.append(data)
+    let box = document.createElement('div')
+    box.className = 'd-grid gap-2'
+    box.innerHTML = ' <button class="btn btn-primary" data-toggle="collapse" href="#collapseExample5" role="button" aria-expanded="false" aria-controls="collapseExample"> Car Specs </button>  <div class="collapse" id="collapseExample5"> ' + data.innerHTML + '</div>'
+   
+    carSpec.appendChild(box)
+
+
 
     b.append(p)
     b.append(kbbData)

@@ -226,29 +226,3 @@ app.get('/car/:id', function (req, res) {
 var server = app.listen(5000, function () {
     console.log('Server is listening at port 5000...');
 });
-
-app.get('/special', function (req, res) {
-
-    // Config your database credential
-
-    // Connect to your database
-    mssql.connect(config, function (err) {
-
-        // Create Request object to preform
-        // query operation
-        let request = new mssql.Request();
-
-        // Query to the database and get the records
-        request.query("SELECT l.[id] as 'listId', l.[price], l.[url], l.[date], l.odometer, l.condition, lo.[location], lo.[url] as 'locUrl', l.alias, l.carId, p.[filename], ma.name as 'Make', ma.id as 'makeId', mo.id as 'modelId', mo.name as 'Model', mo.year as 'Year', k.cons as 'Cons', k.new 'New', k.pros as 'Pros', k.review as 'Review', k.startingPrice as 'sPrice', s.* FROM dbo.listing as l join dbo.picture as p on l.id = p.listingId left join dbo.[location] as lo on l.locationId = lo.id left join dbo.car as c on l.carId = c.id join dbo.make as ma on c.makeId = ma.id left join dbo.model as mo on c.modelId = mo.id left join dbo.kbb_data as k on mo.kbb_dataId = k.id left join dbo.car_spec as s on mo.car_specId = s.id where l.carId != 2;",
-            function (err, records) {
-
-                if (err) console.log(err)
-
-                // Send records as a response
-                // to browser
-
-                res.send(records.recordsets);
-
-            });
-    });
-});
